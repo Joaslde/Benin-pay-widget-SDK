@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Boutique - BeninPay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-card { max-width: 350px; margin: 50px auto; border-radius: 15px; overflow: hidden; }
+        .product-img { height: 200px; background: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        /* Style pour assombrir l'arrière-plan quand le widget apparaît */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div class="container">
+        <div class="card product-card shadow-sm">
+            <div class="product-img">🎧</div>
+            <div class="card-body text-center">
+                <h5 class="card-title">Casque Bluetooth Pro</h5>
+                <p class="text-muted">Qualité sonore exceptionnelle</p>
+                <h4 class="text-primary mb-3">3 057 F CFA</h4>
+                
+                <button id="btn-acheter" class="btn btn-dark w-100 py-2">
+                    Acheter maintenant
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay">
+        <div id="mon-conteneur-paiement">
+            </div>
+    </div>
+
+    <script src="./dist/widget.js"></script>
+
+    <script>
+        // 2. Ici, BeninPay est disponible GLOBALEMENT grâce à window.BeninPay
+        const btnAcheter = document.getElementById('btn-acheter');
+        const overlay = document.getElementById('overlay');
+    
+        btnAcheter.addEventListener('click', () => {
+            overlay.style.display = 'flex';
+    
+            // Appel de l'API publique de ton widget
+            BeninPay.init({
+                mountPlaceId: "mon-conteneur-paiement",
+                amount: 3057,
+                currency: "F CFA",
+                onResult: (payload) => {
+                    console.log("PAYMENT_EVENT", payload); 
+                    
+                    if (payload.status === 'SUCCESS') {
+                        alert("Paiement validé !");
+                        overlay.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
